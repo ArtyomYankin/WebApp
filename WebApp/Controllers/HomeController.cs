@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApp.Models;
+using WebApp.ViewModels;
 
 namespace WebApp.Controllers
 {
@@ -21,7 +22,17 @@ namespace WebApp.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            return View(await db.Users.ToListAsync());
+            var list = new List<ListViewModel>();
+            var users = await db.Users.ToListAsync();
+            foreach (var u in users)
+            {
+                list.Add(new ListViewModel
+                {
+                    User = u,
+                    Flag = false
+                });
+            }
+            return View(list);
         }
         public IActionResult Create()
         {

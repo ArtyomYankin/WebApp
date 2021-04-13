@@ -1,11 +1,19 @@
-﻿@model IEnumerable<WebApp.Models.User>
+﻿@model IEnumerable<WebApp.ViewModels.ListViewModel>
 @{
-    ViewBag.Title = "Все пользователи";
+    ViewBag.Title = "All users";
 }
 <table class="table">
     <tr><td>Id</td><td>Имя</td><td>Email</td></tr>
     @foreach (var item in Model)
     {
-        <tr><td>@item.Id</td><td>@item.Name</td><td>@item.Email</td></tr>
+        <tr><td><input id="@item.User.Id" type ="checkbox" value="@item.Flag" onclick="onClickHandler(@item.Flag.ToString())"  /></td><td>@item.User.Id</td><td>@item.User.Name</td><td>@item.User.Email</td></tr>
+        
     }
 </table>
+
+
+<script>
+    function onClickHandler (e) {
+        console.log(e);
+    }
+</script>
