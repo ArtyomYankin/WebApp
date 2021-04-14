@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +9,8 @@ namespace WebApp.ViewModels
 {
     public class ListViewModel
     {
-        public User User { get; set; }
-        public bool Flag { get; set; }
+       public int Id { get; set; }
+        public string Email { get; set; }
+        public SelectListItem Emps { get; set; }
     }
 }

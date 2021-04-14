@@ -16,35 +16,45 @@ namespace WebApp.Controllers
     {
       
         private UserContext db;
+
+        private readonly UserContext _context;
+
         public HomeController(UserContext context)
         {
-            db = context;
+            _context = context;
         }
         public async Task<IActionResult> Index()
-        {
-            var list = new List<ListViewModel>();
-            var users = await db.Users.ToListAsync();
-            foreach (var u in users)
-            {
-                list.Add(new ListViewModel
+        {   
+                var vm = new List<ListViewModel>();
+                var items = await _context.Users.ToListAsync();
+                foreach (var item in items)
                 {
-                    User = u,
-                    Flag = false
-                });
-            }
-            return View(list);
-        }
-        public IActionResult Create()
-        {
-            return View();
+                    vm.Add(new ListViewModel
+                    {
+                        Id = item.Id,
+                        Email = item.Email
+                    });
+                }
+                return View(vm);
         }
         [HttpPost]
-        public async Task<IActionResult> Create(User user)
+        public IActionResult DeleteUser(List<ListViewModel> emp)
         {
-            db.Users.Add(user);
-            await db.SaveChangesAsync();
+            List<User> user = new List<User>();
+            foreach (var item in emp)
+            {
+                if (item.Emps.Selected)
+                {
+                    var selectedUser = _context.Users.Find(item.Id);
+                    user.Add(selectedUser);
+                }
+
+            }
+            _context.Users.RemoveRange(user);
+            _context.SaveChanges();
             return RedirectToAction("Index");
         }
+        
     }
 }
 
