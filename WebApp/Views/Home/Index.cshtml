@@ -1,53 +1,81 @@
-﻿@model IEnumerable<WebApp.ViewModels.ListViewModel>
+﻿@model List<WebApp.ViewModels.UserViewModel>
 @{
-    ViewBag.Title = "Все пользователи";
+    ViewBag.Title = "All users";
 }
-<form asp-action="DeleteUser" asp-controller="Users" method="post">
-    <table class="table"
-           <thead>
-               <tr>
-                   <th>
-                       <input type="checkbox" name="allcheck" id="selectAll" />Select All
-                   </th>
-                   <th>Id</th>
-                   <th>Email</th>
-                   <th></th>
-               </tr>
-           </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <input type="hidden" asp-for="@item.Emps.Value" />
-                    <input asp-for="@item.Emps.Selected" />
-                    <input type="hidden" asp-for="@item.Id" />
-                </td>
+@if (User.Identity.IsAuthenticated)
+{
+    <p>@User.Identity.Name</p>
+    <form method="post" asp-controller="Account" asp-action="Logout">
+        <button asp-controller="Account" asp-action="Logout" class="btn btn-outline-success" type="submit">
+            <i class="material-icons">logout</i>
+        </button>
+    </form>
+    <form asp-controller="Home" method="post">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" name="allcheck" id="selectAll" />Select All
+                    </th>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>Blocked</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Count(); i++)
+                {
+                <tr>
+                    <td>
+                        <input type="hidden" asp-for="@Model[i].Emps.Value" />
+                        <input asp-for="@Model[i].Emps.Selected" />
+                        <input type="hidden" asp-for="@Model[i].Id">
+                    </td>
 
-                <td>
-                    <input type="hidden" asp-for="@item.Email" />
-                    <label asp-for="@item.Email">@item.Email</label>
-                </td>
-            </tr>
-        }
-    </tbody>
-    </table>
-    <div>
-        <input type="submit" value="Delete" />
-    </div>
-</form>
-@section scripts{ 
-<script>
-    $(function () {
-        $("#selectAll").click(function () {
-            $("input[type=checkbox]").prop('checked', $(this).prop('checked'));
-        });
-        $("input[type=checkbox]").click(function () {
-            if (!$(this).prop("checked")) {
-                $("#selectAll").prop("checked", false);
-            }
-        });
-    })
+                    <td>
+                        @Html.DisplayFor(modelItem => Model[i].Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model[i].Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model[i].IsBlocked)
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        <nav class="navbar navbar-light bg-light">
+        
+                <button asp-action="DeleteUser" class="btn btn-outline-success" type="submit">
+                    <i class="material-icons">delete</i>
+                </button>
+                <button asp-action="Block" class="btn btn-outline-success" type="submit">
+                    Block
+                </button>
+                <button asp-action="Unblock" class="btn btn-outline-success" type="submit">
+                    <i class="material-icons">lock_open</i>
+                </button>
+        </nav>
+    </form>
+    @section scripts{
+        <script>
+            $(function () {
+                $("#selectAll").click(function () {
+                    $("input[type=checkbox]").prop('checked', $(this).prop('checked'));
+                });
+                $("input[type=checkbox]").click(function () {
+                    if (!$(this).prop("checked")) {
+                        $("#selectAll").prop("checked", false);
+                    }
+                });
+            })
 
-</script>
+        </script>
+    }
+}
+else
+{
+        <h3>To have access to users you must be logged in</h3>
 }
